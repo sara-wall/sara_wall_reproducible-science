@@ -1,0 +1,32 @@
+{
+    "id": "ED731929",
+    "path": null,
+    "project_path": null,
+    "type": "r_dataframe",
+    "hash": "0",
+    "contents": "",
+    "dirty": false,
+    "created": 1614639906592.0,
+    "source_on_save": false,
+    "relative_order": 3,
+    "properties": {
+        "expression": "DF_locations",
+        "caption": "DF_locations",
+        "totalObservations": 58,
+        "displayedObservations": 58,
+        "variables": 7,
+        "cacheKey": "4FFDE047",
+        "object": "DF_locations",
+        "environment": "",
+        "contentUrl": "grid_resource/gridviewer.html?env=&obj=DF_locations&cache_key=4FFDE047&max_cols=50",
+        "preview": 0
+    },
+    "folds": "",
+    "lastKnownWriteTime": 8026661835131274564,
+    "encoding": "",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1614639906592,
+    "read_only": false,
+    "read_only_alternatives": []
+}

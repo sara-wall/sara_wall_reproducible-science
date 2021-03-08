@@ -1,0 +1,14 @@
+fig:image
+introduction
+database
+step-1.-load-packages-and-connect-to-the-sql-database
+step-2.-create-df_locations-table
+step-3.-create-catchment-characteristics-table
+step-4.-create-grain-size-distribution-table
+step-5.-create-volume-data-table
+literature
+methods
+applications
+example-one
+example-two
+final-words

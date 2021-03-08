@@ -1,0 +1,63 @@
+Site_id,Fire,fire_year,Source,year_surveyed,Lat,Long
+Brianhead 1,Brianhead,2017,Primary Fieldwork,2020,37.747758,-112.788707
+Brianhead 2,Brianhead,2017,Primary Fieldwork,2020,37.741477,-112.793208
+Brianhead 3,Brianhead,2017,Primary Fieldwork,2020,37.724362,-112.706177
+Brianhead 3.2,Brianhead,2017,Primary Fieldwork,2020,,
+Brianhead 4,Brianhead,2017,Primary Fieldwork,2020,37.758556,-112.794052
+Clay Springs 1,Clay Springs Fire,2012,Primary Fieldwork,2020,39.356533,-112.164818
+Clay Springs 2,Clay Springs Fire,2012,Primary Fieldwork,2020,39.33334,-112.150673
+Dairy Fork 1,Coal Hollow Fire,2018,Primary Fieldwork,2020,39.950798,-111.349319
+Dairy Fork 2,Coal Hollow Fire,2018,Primary Fieldwork,2020,39.953975,-111.347712
+Dollar Ridge 1,Dollar Ridge Fire,2018,Primary Fieldwork,2020,40.120918,-110.744614
+Dollar Ridge 2,Dollar Ridge Fire,2018,Primary Fieldwork,2020,40.114964,-110.812256
+Dollar Ridge 3,Dollar Ridge Fire,2018,Primary Fieldwork,2020,40.118462,-110.829193
+Dollar Ridge 4,Dollar Ridge Fire,2018,Primary Fieldwork,2020,40.12064,-110.790771
+Dollar Ridge 5,Dollar Ridge Fire,2018,Primary Fieldwork,2020,40.121447,-110.834881
+Lake Fork 1,Pole Creek Fire,2018,Primary Fieldwork,2020,39.962445,-111.458642
+Lake Fork 2,Pole Creek Fire,2018,Primary Fieldwork,2020,39.966936,-111.456697
+POCR Blind Canyon 1,Pole Creek Fire,2018,Primary Fieldwork,2020,39.941927,-111.523092
+POCR Cox Canyon,Pole Creek Fire,2018,Primary Fieldwork,2020,39.892185,-111.536011
+POCR Thistle Creek,Pole Creek Fire,2018,Primary Fieldwork,2020,39.953434,-111.529686
+Seeley 1,Seeley Fire,2012,Primary Fieldwork,2020,39.541237,-111.161819
+Shingle 1,Shingle Fire,2012,Primary Fieldwork,2020,37.43088175,-112.6007859
+Tie Fork 1,Tank Hollow Fire,2017,Primary Fieldwork,2020,39.982624,-111.212959
+Tie Fork 2,Tank Hollow Fire,2017,Primary Fieldwork,2020,39.998112,-111.215523
+Trailmountain 1,Trail Mountain,2017,Primary Fieldwork,2020,39.424023,-111.156711
+Trailmountain 2,Trail Mountain,2017,Primary Fieldwork,2020,39.423344,-111.140594
+Trailmountain 3,Trail Mountain,2017,Primary Fieldwork,2020,39.404434,-111.137222
+Trailmountain 4,Trail Mountain,2017,Primary Fieldwork,2020,39.461922,-111.180023
+West Valley 1,West Valley,2018,Primary Fieldwork,2020,37.450813,-113.437439
+West Valley 2,West Valley,2018,Primary Fieldwork,2020,37.448124,-113.406265
+West Valley 3,West Valley,2018,Primary Fieldwork,2020,37.449371,-113.415977
+Frenchy's Meadow,Yellowstone Fires,1988,"Meyer and Wells, 1997",,45.082156,-110.16194
+Slough R.S.,Yellowstone Fires,1988,"Meyer and Wells, 1997",,45.054164,-110.149262
+Twelve Kilometer,Yellowstone Fires,1988,"Meyer and Wells, 1997",,44.99476,-110.19465
+H-Wild Mountain 3-15-98,Dinosaur Monument,1998,"Larsen, 2003",1998,40.573062,-108.977334
+H-Wild Mountain 9-21-98,Dinosaur Monument,1998,"Larsen, 2003",1998,40.573062,-108.977334
+H-Wild Mountain 8-4-99,Dinosaur Monument,1999,"Larsen, 2003",1999,40.573062,-108.977334
+H-Wild Mountain 8-6-02,Dinosaur Monument,2002,"Larsen, 2003",2002,40.573062,-108.977334
+B-Winnies RR 1,Dinosaur Monument,,"Larsen, 2003",2001,40.68527,-108.905382
+B-Winnies RR 2,Dinosaur Monument,,"Larsen, 2003",2001,40.68527,-108.905382
+C-Jack Springs Draw,Dinosaur Monument,,"Larsen, 2003",2001,40.666068,-108.908166
+D-Buster Basin ,Dinosaur Monument,,"Larsen, 2003",2001,40.660361,-108.918468
+E-Middle Disaster ,1996 Fire Dinosaur NM,1996,Martin 2000,,40.647995,-108.930532
+Shingle Creek site 1,Twitchell Fire,2010,Murphy et al. 2019,2017,38.486138,-112.497659
+Shingle Creek site 2,Twitchell Fire,2010,Murphy et al. 2019,2017,38.521416,-112.48801
+Fish Creek Site 1,Twitchell Fire,2010,Murphy et al. 2019,2017,38.501214,-112.453485
+Fish Creek Site 2,Twitchell Fire,2010,Murphy et al. 2019,2017,38.504078,-112.456199
+Fish Creek Site 3,Twitchell Fire,2010,Murphy et al. 2019,2017,38.504983,-112.456048
+Fish Creek Site 4,Twitchell Fire,2010,Murphy et al. 2019,2017,38.51433,-112.459064
+Fish Creek Site 5,Twitchell Fire,2010,Murphy et al. 2019,2017,38.519456,-112.456953
+Fish Creek Site 6,Twitchell Fire,2010,Murphy et al. 2019,2017,38.534683,-112.45243
+Fish Creek Site 7,Twitchell Fire,2010,Murphy et al. 2019,2017,38.540412,-112.448812
+U10 Fan,Woodbury Fire,2019,McGuire et al. 2020,2020,33.5373,-111.294
+B7 Fan,Woodbury Fire,2019,McGuire et al. 2020,2020,33.5371,-111.2804
+U42 Fan,Woodbury Fire,2019,McGuire et al. 2020,2020,33.5283,-111.3064
+Big Tujunga 2009,"2009 Station and
+Jesusita Fires",2009,"Kean et al., 2011",2009,34.287191,-118.233604
+Big Tujunga 2010,"2009 Station and
+Jesusita Fires",2009,"Kean et al., 2011",2010,34.287191,-118.233604
+Dunsmore 1,"2009 Station and
+Jesusita Fires",2009,"Kean et al., 2011",2010,34.259485,-118.24203
+Dunsmore 2,"2009 Station and
+Jesusita Fires",2009,"Kean et al., 2011",2010,34.252883,-118.246537

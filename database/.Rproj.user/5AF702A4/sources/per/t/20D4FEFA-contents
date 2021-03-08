@@ -1,0 +1,63 @@
+
+#RSQLlite
+
+install.packages("RSQLite")
+installed.packages("DBI")
+install.packages("rlang")
+
+# Load packages ####
+
+library(DBI)
+library(RSQLite)
+library(rlang)
+
+# Establish database connection ####
+
+dragons_db <- dbConnect(drv = RSQLite::SQLite(), "../data/dragons.db")
+
+# Retrieve data from the DB ####
+
+dragons <- dbGetQuery(conn = dragons_db, statement = "SELECT * FROM dragons;")
+
+# Alter DB structure ####
+
+dbExecute(conn= dragons_db, statement= "DROP TABLE dragons;")
+
+dbExecute(dragons_db, "CREATE TABLE dragons (
+          dragon_id varchar(5) NOT NULL, 
+          sex char(1) CHECK (sex IN ('M', 'F')), 
+          age_class varchar(8),
+          species varchar(50), 
+          PRIMARY KEY (dragon_id));")
+
+# Import data into the databse ####
+
+dragons <- read.csv("../data/dragons_spreadsheets/dragons.csv")
+names(dragons)[1] <- "dragon_id"
+
+dbWriteTable(conn = dragons_db, "dragons", dragons, append= TRUE)
+#check that it worked
+dbGetQuery(dragons_db, "SELECT * FROM dragons LIMIT 10;")
+
+
+# Trigger functions ####
+
+dbExecute(dragons_db, "ALTER TABLE dragons ADD COLUMN update_timestamp varchar;")
+
+dbExecute(dragons_db, "CREATE TRIGGER add_update_timestamp
+          AFTER INSERT 
+          ON dragons
+          FOR EACH ROW
+          BEGIN
+          UPDATE dragons 
+          SET update_timestamp = datetime('now')
+          WHERE dragon_id = new.dragon_id;
+          END;")
+
+#test trigger function
+dbExecute(dragons_db, "INSERT INTO dragons (dragon_id, sex, age_class, species)
+          VALUES ('D999', 'F', 'Adult', 'Norwegian Ridgeback');")
+
+test <- dbGetQuery(dragons_db, "SELECT * FROM dragons;")
+
+View(test)

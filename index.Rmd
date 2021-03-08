@@ -1,0 +1,18 @@
+--- 
+title: "Reproducible Science Project"
+author: "Sara Wall"
+date: "`r Sys.Date()`"
+site: bookdown::bookdown_site
+documentclass: book
+bibliography: [book.bib, packages.bib]
+biblio-style: apalike
+link-citations: yes
+description: "This is a minimal example of using the bookdown package to write a book. The output format for this example is bookdown::gitbook."
+---
+
+# Introduction
+
+This book is the final project for WILD6900.  The book contains work and data from my MS thesis on post-fire debris flows.
+
+
+

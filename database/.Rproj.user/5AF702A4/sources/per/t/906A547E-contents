@@ -1,0 +1,436 @@
+
+
+#import data
+gsd_rf_trial <- read.csv("C:/Users/saraw/Box Sync/MS_Research/Processed_Data/summary_data-sets/GSD_RF_trial_data.csv", header=TRUE)
+
+
+library(randomForest)
+library(verification)
+
+## Work flow from STAT5650 
+
+#RF trial with all response vars
+gsd_data=subset(gsd_rf_trial,select=c(subD50,initial_vol_est, obs_vol_low,
+                                          obs_vol_high, cat_area, relief, mean_cat_elev,
+                                          himod_perc, himod_area, slope23_perc, 
+                                          sort_unsort, clast_matrix, strat, boulder_perc, 
+                                          dom_lith, Lith_type, X2yr_storm, X100yr_storm,
+                                          Al2O3Ws, CaOWs, Fe2O3Ws, K2OWs, MgOWs,
+                                          Na2OWs, NWs, P2O5Ws, SiO2Ws, PctAlluvCoastWs,
+                                          PctEolFineWs, PctCarbResidWs, PctNonCarbResidWs, 
+                                          PctSilicicWs, CompStrgthWs, HydrlCondWs,
+                                          AvgWetIndxWs, ClayWs, AgKffactWs, PermWs,
+                                          RckdepWs, OmWs, SandWs,PctBl2011Ws,PctConif2011Ws, 
+                                          PctDecid2011Ws, PctGrs2011Ws,PctHay2011Ws,
+                                          PctHbWet2011Ws, PctMxFst2011Ws, PctShrb2011Ws,
+                                          Precip8110Ws, RunoffWs, Tmean8110Ws, WtDepWs))
+set.seed(5341)
+
+subD50.rf=randomForest(subD50~ . ,data=gsd_data)
+subD50.rf$confusion
+table(gsd_data$subD50,predict(subD50.rf,type="class"))
+
+subD50.rf.xval.class=rep(0,length=nrow(gsd_data))
+subD50.rf.xval.prob=rep(0,length=nrow(gsd_data))
+xvs=rep(1:10,length=nrow(gsd_data))
+xvs=sample(xvs)
+for(i in 1:10){
+  train=gsd_data[xvs!=i,]
+  test=gsd_data[xvs==i,]
+  glub=randomForest(subD50~ . , data=train)
+  subD50.rf.xval.class[xvs==i]=predict(glub,test,type="response")
+  subD50.rf.xval.prob[xvs==i]=predict(glub,test,type="prob")[,2]
+}
+
+table(gsd_data$subD50,subD50.rf.xval.class)
+class.sum(gsd_data$subD50,subD50.rf.xval.prob)
+
+set.seed(5341)
+
+subD50.rf=randomForest(subD50~ . ,importance=TRUE,data=gsd_data)
+varImpPlot(subD50.rf,scale=FALSE)
+
+#RF trial with out mineral comp. variables
+gsd_data2=subset(gsd_rf_trial,select=c(subD50,initial_vol_est, obs_vol_low,
+                                      obs_vol_high, cat_area, relief, mean_cat_elev,
+                                      himod_perc, himod_area, slope23_perc, 
+                                      sort_unsort, clast_matrix, strat, boulder_perc, 
+                                      dom_lith, Lith_type, X2yr_storm, X100yr_storm,
+                                      PctAlluvCoastWs,
+                                      PctEolFineWs, PctCarbResidWs, PctNonCarbResidWs, 
+                                      PctSilicicWs, CompStrgthWs, HydrlCondWs,
+                                      AvgWetIndxWs, ClayWs, AgKffactWs, PermWs,
+                                      RckdepWs, OmWs, SandWs,PctBl2011Ws,PctConif2011Ws, 
+                                      PctDecid2011Ws, PctGrs2011Ws,PctHay2011Ws,
+                                      PctHbWet2011Ws, PctMxFst2011Ws, PctShrb2011Ws,
+                                      Precip8110Ws, RunoffWs, Tmean8110Ws, WtDepWs))
+set.seed(2020)
+
+subD50.rf2=randomForest(subD50~ . ,data=gsd_data2)
+subD50.rf2$confusion
+table(gsd_data$subD50,predict(subD50.rf2,type="class"))
+
+subD50.rf2.xval.class=rep(0,length=nrow(gsd_data2))
+subD50.rf2.xval.prob=rep(0,length=nrow(gsd_data2))
+xvs2=rep(1:10,length=nrow(gsd_data2))
+xvs2=sample(xvs2)
+for(i in 1:10){
+  train2=gsd_data2[xvs2!=i,]
+  test2=gsd_data2[xvs2==i,]
+  glub=randomForest(subD50~ . , data=train2)
+  subD50.rf2.xval.class[xvs2==i]=predict(glub,test2,type="response")
+  subD50.rf2.xval.prob[xvs2==i]=predict(glub,test2,type="prob")[,2]
+}
+
+table(gsd_data2$subD50,subD50.rf2.xval.class)
+class.sum(gsd_data2$subD50,subD502.rf.xval.prob)
+
+
+
+subD50.rf2=randomForest( subD50~ . , importance = TRUE, data=gsd_data2)
+varImpPlot(subD50.rf2,scale=FALSE)
+
+
+par(mfrow=c(2,2))
+partialPlot()
+
+
+#Narrowing down variables
+
+#removing sorted/unsorted, clast_matrix, and strat
+gsd_data3=subset(gsd_rf_trial,select=c(subD50,initial_vol_est, obs_vol_low,
+                                       obs_vol_high, cat_area, relief, mean_cat_elev,
+                                       himod_perc, himod_area, slope23_perc, 
+                                        boulder_perc, 
+                                       dom_lith, Lith_type, X2yr_storm, X100yr_storm,
+                                       PctAlluvCoastWs,
+                                       PctEolFineWs, PctCarbResidWs, PctNonCarbResidWs, 
+                                       PctSilicicWs, CompStrgthWs, HydrlCondWs,
+                                       AvgWetIndxWs, ClayWs, AgKffactWs, PermWs,
+                                       RckdepWs, OmWs, SandWs,PctBl2011Ws,PctConif2011Ws, 
+                                       PctDecid2011Ws, PctGrs2011Ws,PctHay2011Ws,
+                                       PctHbWet2011Ws, PctMxFst2011Ws, PctShrb2011Ws,
+                                       Precip8110Ws, RunoffWs, Tmean8110Ws, WtDepWs))
+set.seed(2001)
+subD50.rf3=randomForest( subD50~ . , importance = TRUE, data=gsd_data3)
+varImpPlot(subD50.rf3,scale=FALSE)
+
+
+#removing burn metrics
+gsd_data4=subset(gsd_rf_trial,select=c(subD50,initial_vol_est, obs_vol_low,
+                                       obs_vol_high, cat_area, relief, mean_cat_elev,
+                                       slope23_perc, 
+                                       boulder_perc, 
+                                       dom_lith, Lith_type, X2yr_storm, X100yr_storm,
+                                       PctAlluvCoastWs,
+                                       PctEolFineWs, PctCarbResidWs, PctNonCarbResidWs, 
+                                       PctSilicicWs, CompStrgthWs, HydrlCondWs,
+                                       AvgWetIndxWs, ClayWs, AgKffactWs, PermWs,
+                                       RckdepWs, OmWs, SandWs,PctBl2011Ws,PctConif2011Ws, 
+                                       PctDecid2011Ws, PctGrs2011Ws,PctHay2011Ws,
+                                       PctHbWet2011Ws, PctMxFst2011Ws, PctShrb2011Ws,
+                                       Precip8110Ws, RunoffWs, Tmean8110Ws, WtDepWs))
+set.seed(2001)
+subD50.rf4=randomForest( subD50~ . , importance = TRUE, data=gsd_data4)
+varImpPlot(subD50.rf4,scale=FALSE)
+
+#removing  boulder_perc
+gsd_data5=subset(gsd_rf_trial,select=c(subD50,initial_vol_est, obs_vol_low,
+                                       obs_vol_high, cat_area, relief, mean_cat_elev,
+                                       slope23_perc, 
+                                       dom_lith, Lith_type, X2yr_storm, X100yr_storm,
+                                       PctAlluvCoastWs,
+                                       PctEolFineWs, PctCarbResidWs, PctNonCarbResidWs, 
+                                       PctSilicicWs, CompStrgthWs, HydrlCondWs,
+                                       AvgWetIndxWs, ClayWs, AgKffactWs, PermWs,
+                                       RckdepWs, OmWs, SandWs,PctBl2011Ws,PctConif2011Ws, 
+                                       PctDecid2011Ws, PctGrs2011Ws,PctHay2011Ws,
+                                       PctHbWet2011Ws, PctMxFst2011Ws, PctShrb2011Ws,
+                                       Precip8110Ws, RunoffWs, Tmean8110Ws, WtDepWs))
+#set.seed(2001)
+subD50.rf5=randomForest( subD50~ . , importance = TRUE, data=gsd_data5)
+varImpPlot(subD50.rf5,scale=FALSE)
+
+#removing PctBl2011Ws,obs_vol_low,obs_vol_high,
+gsd_data6=subset(gsd_rf_trial,select=c(subD50,initial_vol_est, 
+                                        cat_area, relief, mean_cat_elev,
+                                       slope23_perc, 
+                                       dom_lith, Lith_type, X2yr_storm, X100yr_storm,
+                                       PctAlluvCoastWs,
+                                       PctEolFineWs, PctCarbResidWs, PctNonCarbResidWs, 
+                                       PctSilicicWs, CompStrgthWs, HydrlCondWs,
+                                       AvgWetIndxWs, ClayWs, AgKffactWs, PermWs,
+                                       RckdepWs, OmWs, SandWs,PctConif2011Ws, 
+                                       PctDecid2011Ws, PctGrs2011Ws,PctHay2011Ws,
+                                       PctHbWet2011Ws, PctMxFst2011Ws, PctShrb2011Ws,
+                                       Precip8110Ws, RunoffWs, Tmean8110Ws, WtDepWs))
+#set.seed(2001)
+subD50.rf6=randomForest( subD50~ . , importance = TRUE, data=gsd_data6)
+varImpPlot(subD50.rf6,scale=FALSE)
+
+#removing slope23_perc,cat_area
+gsd_data7=subset(gsd_rf_trial,select=c(subD50,initial_vol_est, 
+                                        relief, mean_cat_elev,
+                                        
+                                       dom_lith, Lith_type, X2yr_storm, X100yr_storm,
+                                       PctAlluvCoastWs,
+                                       PctEolFineWs, PctCarbResidWs, PctNonCarbResidWs, 
+                                       PctSilicicWs, CompStrgthWs, HydrlCondWs,
+                                       AvgWetIndxWs, ClayWs, AgKffactWs, PermWs,
+                                       RckdepWs, OmWs, SandWs,PctConif2011Ws, 
+                                       PctDecid2011Ws, PctGrs2011Ws,PctHay2011Ws,
+                                       PctHbWet2011Ws, PctMxFst2011Ws, PctShrb2011Ws,
+                                       Precip8110Ws, RunoffWs, Tmean8110Ws, WtDepWs))
+#set.seed(2001)
+subD50.rf7=randomForest( subD50~ . , importance = TRUE, data=gsd_data7)
+varImpPlot(subD50.rf7,scale=FALSE)
+
+
+#removing mean_cat_elev,X100yr_storm
+gsd_data8=subset(gsd_rf_trial,select=c(subD50,initial_vol_est, 
+                                       relief, 
+                                       
+                                       dom_lith, Lith_type, X2yr_storm, 
+                                       PctAlluvCoastWs,
+                                       PctEolFineWs, PctCarbResidWs, PctNonCarbResidWs, 
+                                       PctSilicicWs, CompStrgthWs, HydrlCondWs,
+                                       AvgWetIndxWs, ClayWs, AgKffactWs, PermWs,
+                                       RckdepWs, OmWs, SandWs,PctConif2011Ws, 
+                                       PctDecid2011Ws, PctGrs2011Ws,PctHay2011Ws,
+                                       PctHbWet2011Ws, PctMxFst2011Ws, PctShrb2011Ws,
+                                       Precip8110Ws, RunoffWs, Tmean8110Ws, WtDepWs))
+#set.seed(2001)
+subD50.rf8=randomForest( subD50~ . , importance = TRUE, data=gsd_data8)
+varImpPlot(subD50.rf8,scale=FALSE)
+
+
+#removing relief, initial_vol_est
+gsd_data9=subset(gsd_rf_trial,select=c(subD50,
+                                       
+                                       
+                                       dom_lith, Lith_type, X2yr_storm, 
+                                       PctAlluvCoastWs,
+                                       PctEolFineWs, PctCarbResidWs, PctNonCarbResidWs, 
+                                       PctSilicicWs, CompStrgthWs, HydrlCondWs,
+                                       AvgWetIndxWs, ClayWs, AgKffactWs, PermWs,
+                                       RckdepWs, OmWs, SandWs,PctConif2011Ws, 
+                                       PctDecid2011Ws, PctGrs2011Ws,PctHay2011Ws,
+                                       PctHbWet2011Ws, PctMxFst2011Ws, PctShrb2011Ws,
+                                       Precip8110Ws, RunoffWs, Tmean8110Ws, WtDepWs))
+#set.seed(2001)
+subD50.rf9=randomForest( subD50~ . , importance = TRUE, data=gsd_data9)
+varImpPlot(subD50.rf9,scale=FALSE)
+
+#removing OmWs,  Precip8110Ws,
+gsd_data10=subset(gsd_rf_trial,select=c(subD50,
+                                       
+                                       
+                                       dom_lith, Lith_type, X2yr_storm, 
+                                       PctAlluvCoastWs,
+                                       PctEolFineWs, PctCarbResidWs, PctNonCarbResidWs, 
+                                       PctSilicicWs, CompStrgthWs, HydrlCondWs,
+                                       AvgWetIndxWs, ClayWs, AgKffactWs, PermWs,
+                                       RckdepWs,  SandWs,PctConif2011Ws, 
+                                       PctDecid2011Ws, PctGrs2011Ws,PctHay2011Ws,
+                                       PctHbWet2011Ws, PctMxFst2011Ws, PctShrb2011Ws,
+                                       RunoffWs, Tmean8110Ws, WtDepWs))
+#set.seed(2001)
+subD50.rf10=randomForest( subD50~ . , importance = TRUE, data=gsd_data10)
+varImpPlot(subD50.rf10,scale=FALSE)
+
+#removing PctHay2011Ws
+gsd_data11=subset(gsd_rf_trial,select=c(subD50,
+                                        
+                                        
+                                        dom_lith, Lith_type, X2yr_storm, 
+                                        PctAlluvCoastWs,
+                                        PctEolFineWs, PctCarbResidWs, PctNonCarbResidWs, 
+                                        PctSilicicWs, CompStrgthWs, HydrlCondWs,
+                                        AvgWetIndxWs, ClayWs, AgKffactWs, PermWs,
+                                        RckdepWs,  SandWs,PctConif2011Ws, 
+                                        PctDecid2011Ws, PctGrs2011Ws,
+                                        PctHbWet2011Ws, PctMxFst2011Ws, PctShrb2011Ws,
+                                        RunoffWs, Tmean8110Ws, WtDepWs))
+#set.seed(2001)
+subD50.rf11=randomForest( subD50~ . , importance = TRUE, data=gsd_data11)
+varImpPlot(subD50.rf11,scale=FALSE)
+
+#removing PctDecid2011Ws, PctShrb2011Ws
+gsd_data12=subset(gsd_rf_trial,select=c(subD50,
+                                        
+                                        
+                                        dom_lith, Lith_type, X2yr_storm, 
+                                        PctAlluvCoastWs,
+                                        PctEolFineWs, PctCarbResidWs, PctNonCarbResidWs, 
+                                        PctSilicicWs, CompStrgthWs, HydrlCondWs,
+                                        AvgWetIndxWs, ClayWs, AgKffactWs, PermWs,
+                                        RckdepWs,  SandWs,PctConif2011Ws, 
+                                         PctGrs2011Ws,
+                                        PctHbWet2011Ws, PctMxFst2011Ws, 
+                                        RunoffWs, Tmean8110Ws, WtDepWs))
+#set.seed(2001)
+subD50.rf12=randomForest( subD50~ . , importance = TRUE, data=gsd_data12)
+varImpPlot(subD50.rf12,scale=FALSE)
+
+
+#removing RunoffWs,WtDepWs
+gsd_data13=subset(gsd_rf_trial,select=c(subD50,
+                                        
+                                        
+                                        dom_lith, Lith_type, X2yr_storm, 
+                                        PctAlluvCoastWs,
+                                        PctEolFineWs, PctCarbResidWs, PctNonCarbResidWs, 
+                                        PctSilicicWs, CompStrgthWs, HydrlCondWs,
+                                        AvgWetIndxWs, ClayWs, AgKffactWs, PermWs,
+                                        RckdepWs,  SandWs,PctConif2011Ws, 
+                                        PctGrs2011Ws,
+                                        PctHbWet2011Ws, PctMxFst2011Ws, 
+                                         Tmean8110Ws))
+#set.seed(2001)
+subD50.rf13=randomForest( subD50~ . , importance = TRUE, data=gsd_data13)
+varImpPlot(subD50.rf13,scale=FALSE)
+
+#removing PctNonCarbResidWs, PctHbWet2011Ws,
+gsd_data14=subset(gsd_rf_trial,select=c(subD50,
+                                        
+                                        
+                                        dom_lith, Lith_type, X2yr_storm, 
+                                        PctAlluvCoastWs,
+                                        PctEolFineWs, PctCarbResidWs, 
+                                        PctSilicicWs, CompStrgthWs, HydrlCondWs,
+                                        AvgWetIndxWs, ClayWs, AgKffactWs, PermWs,
+                                        RckdepWs,  SandWs,PctConif2011Ws, 
+                                        PctGrs2011Ws,
+                                         PctMxFst2011Ws, 
+                                        Tmean8110Ws))
+#set.seed(2001)
+subD50.rf14=randomForest( subD50~ . , importance = TRUE, data=gsd_data14)
+varImpPlot(subD50.rf14,scale=FALSE)
+
+
+
+
+#removing Tmean8110Ws, PctCarbResidWs, 
+gsd_data15=subset(gsd_rf_trial,select=c(subD50,
+                                        
+                                        
+                                        dom_lith, Lith_type, X2yr_storm, 
+                                        PctAlluvCoastWs,
+                                        PctEolFineWs, 
+                                        PctSilicicWs, CompStrgthWs, HydrlCondWs,
+                                        AvgWetIndxWs, ClayWs, AgKffactWs, PermWs,
+                                        RckdepWs,  SandWs,PctConif2011Ws, 
+                                        PctGrs2011Ws,
+                                        PctMxFst2011Ws))
+#set.seed(2001)
+subD50.rf15=randomForest( subD50~ . , importance = TRUE, data=gsd_data15)
+varImpPlot(subD50.rf15,scale=FALSE)
+
+
+
+#removing  AgKffactWs,  PctEolFineWs, 
+gsd_data16=subset(gsd_rf_trial,select=c(subD50,
+                                        
+                                        
+                                        dom_lith, Lith_type, X2yr_storm, 
+                                        PctAlluvCoastWs,
+                                        
+                                        PctSilicicWs, CompStrgthWs, HydrlCondWs,
+                                        AvgWetIndxWs, ClayWs,PermWs,
+                                        RckdepWs,  SandWs,PctConif2011Ws, 
+                                        PctGrs2011Ws,
+                                        PctMxFst2011Ws))
+#set.seed(2001)
+subD50.rf16=randomForest( subD50~ . , importance = TRUE, data=gsd_data16)
+varImpPlot(subD50.rf16,scale=FALSE)
+
+#using only top 8 variables
+gsd_data17=subset(gsd_rf_trial,select=c(subD50,
+                                        
+                                        
+                                        
+                                        
+                                         CompStrgthWs, 
+                                        AvgWetIndxWs, ClayWs,PermWs,
+                                        RckdepWs,  SandWs,
+                                        PctGrs2011Ws,
+                                        PctMxFst2011Ws))
+#set.seed(2001)
+subD50.rf17=randomForest( subD50~ . , importance = TRUE, data=gsd_data17)
+varImpPlot(subD50.rf17,scale=FALSE)
+
+
+#using top 3 variables
+gsd_data18=subset(gsd_rf_trial,select=c(subD50,ClayWs,PermWs,
+                                         SandWs))
+#set.seed(2001)
+subD50.rf18=randomForest( subD50~ . , importance = TRUE, data=gsd_data18)
+varImpPlot(subD50.rf18,scale=FALSE)
+
+
+
+## PHI SCALE RF MODEL TRIAL
+GSD_RF_trial_data2 <- GSD_RF_trial_data
+subD50_phi <- c(log2(GSD_RF_trial_data$subD50))
+
+GSD_RF_trial_data["subD50_phi"] <- subD50_phi
+
+
+gsd_phi1=subset(GSD_RF_trial_data2,select=c(subD50_phi,initial_vol_est, obs_vol_low,
+                                       obs_vol_high, cat_area, relief, mean_cat_elev,
+                                       himod_perc, himod_area, slope23_perc, 
+                                       boulder_perc, 
+                                       dom_lith, Lith_type, X2yr_storm, X100yr_storm,
+                                       PctAlluvCoastWs,
+                                       PctEolFineWs, PctCarbResidWs, PctNonCarbResidWs, 
+                                       PctSilicicWs, CompStrgthWs, HydrlCondWs,
+                                       AvgWetIndxWs, ClayWs, AgKffactWs, PermWs,
+                                       RckdepWs, OmWs, SandWs,PctBl2011Ws,PctConif2011Ws, 
+                                       PctDecid2011Ws, PctGrs2011Ws,PctHay2011Ws,
+                                       PctHbWet2011Ws, PctMxFst2011Ws, PctShrb2011Ws,
+                                       Precip8110Ws, RunoffWs, Tmean8110Ws, WtDepWs))
+set.seed(2001)
+subD50.rf_phi1=randomForest( subD50_phi~ . , importance = TRUE, data=gsd_phi1)
+varImpPlot(subD50.rf_phi1,scale=FALSE)
+
+#randomly narrowing down variables--trial REDO
+gsd_phi2=subset(GSD_RF_trial_data2,select=c(subD50_phi,initial_vol_est, 
+                                       relief, mean_cat_elev,
+                                       
+                                       dom_lith, Lith_type, X2yr_storm, X100yr_storm,
+                                       PctAlluvCoastWs,
+                                       PctEolFineWs, PctCarbResidWs, PctNonCarbResidWs, 
+                                       PctSilicicWs, CompStrgthWs, HydrlCondWs,
+                                       AvgWetIndxWs, ClayWs, AgKffactWs, PermWs,
+                                       RckdepWs, OmWs, SandWs,PctConif2011Ws, 
+                                       PctDecid2011Ws, PctGrs2011Ws,PctHay2011Ws,
+                                       PctHbWet2011Ws, PctMxFst2011Ws, PctShrb2011Ws,
+                                       Precip8110Ws, RunoffWs, Tmean8110Ws, WtDepWs))
+#set.seed(2001)
+subD50.rf_phi2=randomForest( subD50_phi~ . , importance = TRUE, data=gsd_phi2)
+varImpPlot(subD50.rf_phi2,scale=FALSE)
+
+
+#using only top 8 variables (For non phi scale)
+gsd_phi3=subset(GSD_RF_trial_data2,select=c(subD50_phi,
+                                        
+                                        
+                                        
+                                        
+                                        CompStrgthWs, 
+                                        AvgWetIndxWs, ClayWs,PermWs,
+                                        RckdepWs,  SandWs,
+                                        PctGrs2011Ws,
+                                        PctMxFst2011Ws))
+#set.seed(2001)
+subD50.rf_phi3=randomForest( subD50_phi~ . , importance = TRUE, data=gsd_phi3)
+varImpPlot(subD50.rf_phi3,scale=FALSE)
+
+
+#using top 3 variables (for non phi scale)
+gsd_phi4=subset(GSD_RF_trial_data2,select=c(subD50_phi,ClayWs,PermWs,
+                                        SandWs))
+#set.seed(2001)
+subD50.rf_phi4=randomForest( subD50_phi~ . , importance = TRUE, data=gsd_phi4)
+varImpPlot(subD50.rf_phi4,scale=FALSE)
+

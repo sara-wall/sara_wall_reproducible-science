@@ -1,0 +1,177 @@
+---
+title: "Create_MS-database"
+author: "Sara Wall"
+date: "3/1/2021"
+output: html_document
+---
+
+## This document will create a database for my MS Research Data. 
+
+#### The database will follow the following structure:
+
+```{r image, fig.cap="Database Structure", fig.align='center', out.width='80%', echo=FALSE}
+
+knitr::include_graphics("database_structure.jpg")
+```
+
+The data in this database is compiled from primary fieldwork and from data found in the literature. For each post-fire debris flow characterized, location, grain size, volume, and catchment characteristics are provided. Each debris flow fan is characterized once and therefore the site_id for each fan is used as the Primary Key in all data sets in the database. 
+
+
+### Step 1. Load packages and connect to the SQL database
+
+```{r packages, eval=TRUE}
+
+# Load packages ####
+
+library(DBI)
+library(RSQLite)
+library(rlang)
+
+# Establish database connection ####
+
+debrisflow_db <- dbConnect(drv = RSQLite::SQLite(), "MS_research_db.db")
+
+```
+
+### Step 2. Create DF_Locations Table
+
+```{r DF_locations, eval=FALSE}
+
+dbExecute(debrisflow_db, "CREATE TABLE DF_locations (
+          Site_id varchar(50),
+          Fire varchar(50),
+          fire_year varchar(5),
+          Source varchar(50),
+          year_surveyed varchar(5),
+          Lat double,
+          long double, PRIMARY KEY (Site_id));
+          ")
+
+DF_locations <- read.csv("DF_locations.csv", header = TRUE, stringsAsFactors = FALSE)
+
+names(DF_locations)
+
+dbWriteTable(debrisflow_db, "DF_locations", DF_locations, append= TRUE)
+```
+
+```{r check df_locations, eval=TRUE}
+#Check table
+dbGetQuery(debrisflow_db, "SELECT * FROM DF_locations LIMIT 10;")
+
+```
+
+### Step 3. Create Catchment Characteristics Table
+
+```{r catchment, eval=FALSE}
+
+dbExecute(debrisflow_db, "CREATE TABLE catchments (
+          Site_id varchar(50),
+          cat_area float, 
+          relief float, 
+          mean_cat_elev float,
+          himod_perc float, 
+          himod_area float, 
+          slope23_perc float, 
+          sort_unsort char(10), 
+          clast_matrix char(10), 
+          strat char(10), 
+          boulder_perc float, 
+          dom_lith char(20), 
+          Lith_type char(20), 
+          X2yr_storm float, 
+          X100yr_storm float,
+          Al2O3Ws float, CaOWs float, Fe2O3Ws float, K2OWs float, MgOWs float,
+          Na2OWs float, NWs float, P2O5Ws float, SiO2Ws float, 
+          PctAlluvCoastWs float,
+          PctEolFineWs float, PctCarbResidWs float, PctNonCarbResidWs float, 
+          PctSilicicWs float, CompStrgthWs float, HydrlCondWs float,
+          AvgWetIndxWs float, ClayWs float, AgKffactWs float, PermWs float,
+          RckdepWs float, OmWs float, SandWs float,PctBl2011Ws float,
+          PctConif2011Ws float, 
+          PctDecid2011Ws float, PctGrs2011Ws float,PctHay2011Ws float,
+          PctHbWet2011Ws float, PctMxFst2011Ws float, PctShrb2011Ws float,
+          Precip8110Ws float, RunoffWs float, Tmean8110Ws float, WtDepWs float
+
+          PRIMARY KEY (Site_id));
+          ")
+
+catchments <- read.csv("catchments.csv", header = TRUE, stringsAsFactors = FALSE)
+
+names(catchments)
+
+dbWriteTable(debrisflow_db, "catchments", catchments, append= TRUE)
+```
+
+```{r check catchments table, eval=TRUE}
+#Check table
+dbGetQuery(debrisflow_db, "SELECT * FROM catchments LIMIT 10;")
+
+```
+
+### Step 4. Create Grain Size Distribution Table
+
+```{r GSD, eval= FALSE}
+
+dbExecute(debrisflow_db, "CREATE TABLE GSD (
+          Site_id varchar(50),
+          subD16 float,
+          subD50 float,
+          subD84 float,
+          D84B float,
+          surD16 float,
+          surD50 float,
+          surD84 float,
+          subD50range float,
+          sub_var float, 
+          sur_var float, 
+          PRIMARY KEY (Site_id));
+          ")
+
+GSD <- read.csv("GSD_data.csv", header = TRUE, stringsAsFactors = FALSE)
+
+names(GSD)
+
+dbWriteTable(debrisflow_db, "GSD", GSD, append= TRUE)
+```
+
+```{r check GSD table, eval=TRUE}
+#Check table
+dbGetQuery(debrisflow_db, "SELECT * FROM GSD LIMIT 10;")
+```
+
+### Step 5. Create Volume Data Table
+
+```{r Volume, eval= FALSE}
+
+dbExecute(debrisflow_db, "CREATE TABLE volume (
+          obsVol_min varchar(50),
+          obsVol float,
+          obsVol_max float,
+          G08_vol2yr_min float,
+          G08_vol2yr float,
+          G08_vol2yr_max float,
+          G08_vol100yr_min float,
+          G08_vol100yr float,
+          G08_vol100yr_max float,
+          G14_vol2yr_min float, 
+          G14_vol2yr float,
+          G14_vol2yr_max float,
+          G14_vol100yr_min float, 
+          G14_vol100yr float,
+          G14_vol100yr_max float,
+          PRIMARY KEY (Site_id));
+          ")
+
+volume <- read.csv("DF_Volume_data.csv", header = TRUE, stringsAsFactors = FALSE)
+
+names(volume)
+
+dbWriteTable(debrisflow_db, "volume", volume, append= TRUE)
+```
+
+```{r check volume table, eval=TRUE}
+#Check table
+dbGetQuery(debrisflow_db, "SELECT * FROM volume LIMIT 10;")
+```
+
+
