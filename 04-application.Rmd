@@ -1,7 +1,44 @@
-# Applications
+# Subsurface vs Surface Grain Size Distribution
 
-Some _significant_ applications are demonstrated in this chapter.
 
-## Example one
+```{r load2, echo = FALSE, warning=FALSE, message=FALSE, results=FALSE}
 
-## Example two
+library(tidyverse)
+library(DBI)
+library(ggplot2)
+library(patchwork)
+library(ggridges)
+
+
+volume <- read_csv("C:/Users/saraw/Box Sync/MS_Research/Processed_Data/summary_data-sets/final_datasets/DF_Volume_data-set.csv")
+
+GSD<- read_csv("C:/Users/saraw/Box Sync/MS_Research/Processed_Data/summary_data-sets/final_datasets/GSD_Summary_Data.csv")
+
+
+```
+
+
+Scatter plot of the surface vs subsurface median grain size
+```{r scatterplot, warning=FALSE}
+
+GSD %>% 
+  filter(complete.cases(subD50),
+         (Lith_type == "igneous" | Lith_type == "sedimentary")) %>%
+  mutate(subD50_phi = log2(subD50),
+         surD50_phi = log2(surD50)) %>% 
+  ggplot(aes(x = subD50_phi, y = surD50_phi, color = Lith_type))+
+  geom_abline(aes(slope = 1, intercept = 0),  
+              size = 0.5) +
+  geom_point(size = 4) +
+  guides(color = guide_legend(), size = guide_legend()) +
+  theme_minimal() +
+  labs(x = "Subsurface D50 (phi)", y = "Surface D50 (phi)", 
+       color = "Lithology") +
+  theme(legend.position = "bottom")
+
+```
+
+The line in the plot represents the 1 to 1. The data would follow the line if
+the subsurface and surface distributions were the same. However, majority of
+the points are on the left of the line, indicating that the surface distribution 
+is coarser than the subsurface distribution. 

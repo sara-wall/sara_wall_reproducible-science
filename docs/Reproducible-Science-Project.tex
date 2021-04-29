@@ -113,7 +113,7 @@
 
 \title{Reproducible Science Project}
 \author{Sara Wall}
-\date{2021-03-08}
+\date{2021-04-29}
 
 \begin{document}
 \maketitle
@@ -126,6 +126,22 @@
 \chapter{Introduction}\label{introduction}}
 
 This book is the final project for WILD6900. The book contains work and data from my MS thesis on post-fire debris flows.
+
+\hypertarget{research-background}{%
+\chapter{Research Background}\label{research-background}}
+
+Post-fire debris flows (PFDF) represent one of the most destructive and potentially hazardous consequences associated with increasing wildfire severity. While the abundance of literature has explored the initiation processes and generation of PFDFs, investigations into their downstream impacts are limited. Modeling frameworks have begun to investigate the downstream impacts of post-fire erosion by predicting where PFDF sediment is generated post-wildfire, how much of that sediment is delivered to a stream channel, and how that pulse of sediment propagates downstream through the river network. While most inputs to such modeling frameworks are available through open source datasets, a significant gap still exists regarding the grain size distributions (GSD) of PFDFs and the factors influencing these GSDs. This presents a major obstacle in developing watershed-scale wildfire risk assessment models, as GSD exerts a first-order control on the rates and modes of sediment transport through a river network. Additionally, while models exist to predict the volumes of sediment deposited by PFDFs, the most prominent volume-prediction model (Gartner et al., 2014) was calibrated using data from Southern California. We therefore have a limited understanding of how this model functions in other regions. We have compiled GSDs and volume data from previous wildfire studies and conducted new fieldwork measuring GSDs and deposit volumes in PFDF deposits to fill this critical knowledge gap. Adding to the 25 GSDs and the 13 volume measurements from previous studies spanning the Intermountain West, we measured GSDs and volumes from an additional 30 PFDFs that occurred in 10 different wildfires across Utah. Altogether this represents the largest and most spatially extensive dataset of PFDF GSDs of which we are aware. Catchments that produced these PFDFs vary in upstream burn severity, area, slope, forest type, soils, climate, and geology. These metrics were all extracted as potential predictor variables for our statistical analysis. We will analyze these data using Random Forest and Multiple Linear Regression statistical modeling and investigate which landscape metrics exert the most control on PFDF GSD and volumes in the Intermountain West. We aim to generalize the results of our GSD model and to validate existing PFDF volume models for this region.
+
+\hypertarget{research-questions}{%
+\section{Research Questions}\label{research-questions}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  How much variance is there in post-fire debris flow grain sizes between different fans?
+\item
+  How well do the Gartner et al.~(2008; 2014) models apply to debris flows in the Intermountain West?
+\end{enumerate}
 
 \hypertarget{database}{%
 \chapter{Create Database}\label{database}}
@@ -511,31 +527,111 @@ The data in this database is compiled from primary fieldwork and from data found
 ## 10 44942.7880     359743.149       9598.77383   76833.0868       615008.054
 \end{verbatim}
 
-\hypertarget{literature}{%
-\chapter{Literature}\label{literature}}
+\hypertarget{investigating-grain-size-variance}{%
+\chapter{Investigating Grain Size Variance}\label{investigating-grain-size-variance}}
 
-Here is a review of existing methods.
+First, we will look at a boxplot of the distributions of the median grain size
+for all debris flow fans broken down by lithology.
 
-\hypertarget{methods}{%
-\chapter{Methods}\label{methods}}
+Plotting boxplot of median grain size:
 
-We describe our methods in this chapter.
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{GSD }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{filter}\NormalTok{(}\KeywordTok{complete.cases}\NormalTok{(subD50),}
+\NormalTok{         (Lith_type }\OperatorTok{==}\StringTok{ "igneous"} \OperatorTok{|}\StringTok{ }\NormalTok{Lith_type }\OperatorTok{==}\StringTok{ "sedimentary"}\NormalTok{)) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{subD50_phi =} \KeywordTok{log2}\NormalTok{(subD50)) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{relocate}\NormalTok{(subD50_phi, }\DataTypeTok{.after =}\NormalTok{ subD50) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{ggplot}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ Lith_type, }\DataTypeTok{y=}\NormalTok{ subD50_phi, }\DataTypeTok{color =}\NormalTok{ Lith_type))}\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_boxplot}\NormalTok{() }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_jitter}\NormalTok{(}\DataTypeTok{alpha =} \FloatTok{0.5}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{labs}\NormalTok{(}\DataTypeTok{y =} \StringTok{"Subsurface D50 (phi)"}\NormalTok{, }\DataTypeTok{x =} \StringTok{""}\NormalTok{, }\DataTypeTok{color =} \StringTok{""}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{theme_minimal}\NormalTok{() }\OperatorTok{+}
+\StringTok{  }\KeywordTok{theme}\NormalTok{(}\DataTypeTok{legend.position =} \StringTok{"bottom"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
 
-\hypertarget{applications}{%
-\chapter{Applications}\label{applications}}
+\includegraphics{Reproducible-Science-Project_files/figure-latex/boxplot-1.pdf}
 
-Some \emph{significant} applications are demonstrated in this chapter.
+It is surpising that there is not much of a discernible difference in median
+grain size distributions between the sedimentary and igneous rocks.
 
-\hypertarget{example-one}{%
-\section{Example one}\label{example-one}}
+Density plot of median grain size by lithology:
 
-\hypertarget{example-two}{%
-\section{Example two}\label{example-two}}
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{GSD }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{filter}\NormalTok{(}
+\NormalTok{         (Lith_type }\OperatorTok{==}\StringTok{ "igneous"} \OperatorTok{|}\StringTok{ }\NormalTok{Lith_type }\OperatorTok{==}\StringTok{ "sedimentary"}\NormalTok{)) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{subD50_phi =} \KeywordTok{log2}\NormalTok{(subD50),}
+         \DataTypeTok{surD50_phi =} \KeywordTok{log2}\NormalTok{(surD50)) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{ggplot}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ subD50_phi, }\DataTypeTok{y =}\NormalTok{ Lith_type, }\DataTypeTok{fill =}\NormalTok{ Lith_type)) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_density_ridges}\NormalTok{(}\DataTypeTok{scale =} \DecValTok{8}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{theme_minimal}\NormalTok{() }\OperatorTok{+}
+\StringTok{  }\KeywordTok{labs}\NormalTok{(}\DataTypeTok{y =} \StringTok{""}\NormalTok{, }\DataTypeTok{x =} \StringTok{"D50"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{theme}\NormalTok{(}\DataTypeTok{legend.position =} \StringTok{"none"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
 
-\hypertarget{final-words}{%
-\chapter{Final Words}\label{final-words}}
+\includegraphics{Reproducible-Science-Project_files/figure-latex/density plot-1.pdf}
 
-We have finished a nice book.
+We can see that the igneous distribution is narrower than that of the sedimentary rocks.
+
+\hypertarget{subsurface-vs-surface-grain-size-distribution}{%
+\chapter{Subsurface vs Surface Grain Size Distribution}\label{subsurface-vs-surface-grain-size-distribution}}
+
+Scatter plot of the surface vs subsurface median grain size
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{GSD }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{filter}\NormalTok{(}\KeywordTok{complete.cases}\NormalTok{(subD50),}
+\NormalTok{         (Lith_type }\OperatorTok{==}\StringTok{ "igneous"} \OperatorTok{|}\StringTok{ }\NormalTok{Lith_type }\OperatorTok{==}\StringTok{ "sedimentary"}\NormalTok{)) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{subD50_phi =} \KeywordTok{log2}\NormalTok{(subD50),}
+         \DataTypeTok{surD50_phi =} \KeywordTok{log2}\NormalTok{(surD50)) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{ggplot}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ subD50_phi, }\DataTypeTok{y =}\NormalTok{ surD50_phi, }\DataTypeTok{color =}\NormalTok{ Lith_type))}\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_abline}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{slope =} \DecValTok{1}\NormalTok{, }\DataTypeTok{intercept =} \DecValTok{0}\NormalTok{),  }
+              \DataTypeTok{size =} \FloatTok{0.5}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_point}\NormalTok{(}\DataTypeTok{size =} \DecValTok{4}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{guides}\NormalTok{(}\DataTypeTok{color =} \KeywordTok{guide_legend}\NormalTok{(), }\DataTypeTok{size =} \KeywordTok{guide_legend}\NormalTok{()) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{theme_minimal}\NormalTok{() }\OperatorTok{+}
+\StringTok{  }\KeywordTok{labs}\NormalTok{(}\DataTypeTok{x =} \StringTok{"Subsurface D50 (phi)"}\NormalTok{, }\DataTypeTok{y =} \StringTok{"Surface D50 (phi)"}\NormalTok{, }
+       \DataTypeTok{color =} \StringTok{"Lithology"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{theme}\NormalTok{(}\DataTypeTok{legend.position =} \StringTok{"bottom"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Reproducible-Science-Project_files/figure-latex/scatterplot-1.pdf}
+
+The line in the plot represents the 1 to 1. The data would follow the line if
+the subsurface and surface distributions were the same. However, majority of
+the points are on the left of the line, indicating that the surface distribution
+is coarser than the subsurface distribution.
+
+\hypertarget{evaluating-the-gartner-et-al.-2014-model}{%
+\chapter{Evaluating the Gartner et al., 2014 model}\label{evaluating-the-gartner-et-al.-2014-model}}
+
+Plotting the Observed Volume vs predicted volume:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{volume }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{ggplot}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ obsVol, }\DataTypeTok{size =}\NormalTok{ obsVol))}\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_point}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{y =}\NormalTok{ G14_vol100yr), }\DataTypeTok{color =} \StringTok{"slateblue4"}\NormalTok{, }\DataTypeTok{label =} \StringTok{"100 year storm"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_abline}\NormalTok{(}\DataTypeTok{intercept =} \DecValTok{0}\NormalTok{, }\DataTypeTok{slope =} \DecValTok{1}\NormalTok{)}\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_size_continuous}\NormalTok{(}\DataTypeTok{breaks=}\KeywordTok{seq}\NormalTok{(}\DecValTok{500}\NormalTok{, }\DecValTok{10000}\NormalTok{, }\DataTypeTok{by=}\DecValTok{2000}\NormalTok{))}\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_x_continuous}\NormalTok{(}\DataTypeTok{trans =} \StringTok{'log10'}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_y_continuous}\NormalTok{(}\DataTypeTok{trans =} \StringTok{'log10'}\NormalTok{)}\OperatorTok{+}
+\StringTok{  }\KeywordTok{guides}\NormalTok{(}\DataTypeTok{size =} \KeywordTok{guide_legend}\NormalTok{()) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{labs}\NormalTok{(}\DataTypeTok{x =} \StringTok{"Observed Volume"}\NormalTok{, }\DataTypeTok{y =} \StringTok{"Modeled Volume"}\NormalTok{  )}\OperatorTok{+}
+\StringTok{  }\KeywordTok{theme_minimal}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Reproducible-Science-Project_files/figure-latex/volume model-1.pdf}
+
+We can see that the model does not do a good job of estimating post-fire debris flow
+volumes in the Intermountain West, especially for smaller volume debris flows.
 
   \bibliography{book.bib,packages.bib}
 

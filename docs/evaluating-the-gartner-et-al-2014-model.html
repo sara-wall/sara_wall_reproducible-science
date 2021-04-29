@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>References | Reproducible Science Project</title>
+  <title>Chapter 6 Evaluating the Gartner et al., 2014 model | Reproducible Science Project</title>
   <meta name="description" content="This is a minimal example of using the bookdown package to write a book. The output format for this example is bookdown::gitbook." />
   <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="References | Reproducible Science Project" />
+  <meta property="og:title" content="Chapter 6 Evaluating the Gartner et al., 2014 model | Reproducible Science Project" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="References | Reproducible Science Project" />
+  <meta name="twitter:title" content="Chapter 6 Evaluating the Gartner et al., 2014 model | Reproducible Science Project" />
   
   <meta name="twitter:description" content="This is a minimal example of using the bookdown package to write a book. The output format for this example is bookdown::gitbook." />
   
@@ -31,7 +31,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="evaluating-the-gartner-et-al-2014-model.html"/>
+<link rel="prev" href="subsurface-vs-surface-grain-size-distribution.html"/>
 
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -148,7 +148,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="4" data-path="investigating-grain-size-variance.html"><a href="investigating-grain-size-variance.html"><i class="fa fa-check"></i><b>4</b> Investigating Grain Size Variance</a></li>
 <li class="chapter" data-level="5" data-path="subsurface-vs-surface-grain-size-distribution.html"><a href="subsurface-vs-surface-grain-size-distribution.html"><i class="fa fa-check"></i><b>5</b> Subsurface vs Surface Grain Size Distribution</a></li>
 <li class="chapter" data-level="6" data-path="evaluating-the-gartner-et-al-2014-model.html"><a href="evaluating-the-gartner-et-al-2014-model.html"><i class="fa fa-check"></i><b>6</b> Evaluating the Gartner et al., 2014 model</a></li>
-<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 <li class="divider"></li>
 <li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
 
@@ -169,8 +168,22 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="references" class="section level1 unnumbered">
-<h1>References</h1>
+<div id="evaluating-the-gartner-et-al.-2014-model" class="section level1">
+<h1><span class="header-section-number">Chapter 6</span> Evaluating the Gartner et al., 2014 model</h1>
+<p>Plotting the Observed Volume vs predicted volume:</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="evaluating-the-gartner-et-al-2014-model.html#cb21-1"></a>volume <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb21-2"><a href="evaluating-the-gartner-et-al-2014-model.html#cb21-2"></a><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> obsVol, <span class="dt">size =</span> obsVol))<span class="op">+</span></span>
+<span id="cb21-3"><a href="evaluating-the-gartner-et-al-2014-model.html#cb21-3"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">y =</span> G14_vol100yr), <span class="dt">color =</span> <span class="st">&quot;slateblue4&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;100 year storm&quot;</span>) <span class="op">+</span></span>
+<span id="cb21-4"><a href="evaluating-the-gartner-et-al-2014-model.html#cb21-4"></a><span class="st">  </span><span class="kw">geom_abline</span>(<span class="dt">intercept =</span> <span class="dv">0</span>, <span class="dt">slope =</span> <span class="dv">1</span>)<span class="op">+</span></span>
+<span id="cb21-5"><a href="evaluating-the-gartner-et-al-2014-model.html#cb21-5"></a><span class="st">  </span><span class="kw">scale_size_continuous</span>(<span class="dt">breaks=</span><span class="kw">seq</span>(<span class="dv">500</span>, <span class="dv">10000</span>, <span class="dt">by=</span><span class="dv">2000</span>))<span class="op">+</span></span>
+<span id="cb21-6"><a href="evaluating-the-gartner-et-al-2014-model.html#cb21-6"></a><span class="st">  </span><span class="kw">scale_x_continuous</span>(<span class="dt">trans =</span> <span class="st">&#39;log10&#39;</span>) <span class="op">+</span></span>
+<span id="cb21-7"><a href="evaluating-the-gartner-et-al-2014-model.html#cb21-7"></a><span class="st">  </span><span class="kw">scale_y_continuous</span>(<span class="dt">trans =</span> <span class="st">&#39;log10&#39;</span>)<span class="op">+</span></span>
+<span id="cb21-8"><a href="evaluating-the-gartner-et-al-2014-model.html#cb21-8"></a><span class="st">  </span><span class="kw">guides</span>(<span class="dt">size =</span> <span class="kw">guide_legend</span>()) <span class="op">+</span></span>
+<span id="cb21-9"><a href="evaluating-the-gartner-et-al-2014-model.html#cb21-9"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Observed Volume&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;Modeled Volume&quot;</span>  )<span class="op">+</span></span>
+<span id="cb21-10"><a href="evaluating-the-gartner-et-al-2014-model.html#cb21-10"></a><span class="st">  </span><span class="kw">theme_minimal</span>()</span></code></pre></div>
+<p><img src="Reproducible-Science-Project_files/figure-html/volume%20model-1.png" width="672" /></p>
+<p>We can see that the model does not do a good job of estimating post-fire debris flow
+volumes in the Intermountain West, especially for smaller volume debris flows.</p>
 
 </div>
             </section>
@@ -178,7 +191,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           </div>
         </div>
       </div>
-<a href="evaluating-the-gartner-et-al-2014-model.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="subsurface-vs-surface-grain-size-distribution.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
 
     </div>
   </div>

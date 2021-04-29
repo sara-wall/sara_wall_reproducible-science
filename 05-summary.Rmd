@@ -1,3 +1,36 @@
-# Final Words
+# Evaluating the Gartner et al., 2014 model
+```{r load3, echo = FALSE, warning=FALSE, message=FALSE, results=FALSE}
 
-We have finished a nice book.
+library(tidyverse)
+library(DBI)
+library(ggplot2)
+library(patchwork)
+library(ggridges)
+
+
+volume <- read_csv("C:/Users/saraw/Box Sync/MS_Research/Processed_Data/summary_data-sets/final_datasets/DF_Volume_data-set.csv")
+
+GSD<- read_csv("C:/Users/saraw/Box Sync/MS_Research/Processed_Data/summary_data-sets/final_datasets/GSD_Summary_Data.csv")
+
+
+```
+
+Plotting the Observed Volume vs predicted volume:
+```{r volume model, message = FALSE, warning=FALSE}
+
+volume %>% 
+  ggplot(aes(x = obsVol, size = obsVol))+
+  geom_point(aes(y = G14_vol100yr), color = "slateblue4", label = "100 year storm") +
+  geom_abline(intercept = 0, slope = 1)+
+  scale_size_continuous(breaks=seq(500, 10000, by=2000))+
+  scale_x_continuous(trans = 'log10') +
+  scale_y_continuous(trans = 'log10')+
+  guides(size = guide_legend()) +
+  labs(x = "Observed Volume", y = "Modeled Volume"  )+
+  theme_minimal()
+
+```
+
+We can see that the model does not do a good job of estimating post-fire debris flow
+volumes in the Intermountain West, especially for smaller volume debris flows.
+
